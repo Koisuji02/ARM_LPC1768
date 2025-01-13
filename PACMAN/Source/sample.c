@@ -617,7 +617,7 @@ void muoviChaseMode(){ // singolo movimento in chase mode (uguale a frightened m
 #define TIMER1 0x17D7840
 #define TIMER2 0x17D7840
 #define TIMER3 0x17D7840
-#define RIT 0x17D7840
+#define RIT 0x2FAF080
 #endif
 
 int main(void){

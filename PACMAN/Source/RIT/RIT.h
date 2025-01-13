@@ -64,7 +64,7 @@ extern int callerGameOver;
 #define TIMER1 0x17D7840
 #define TIMER2 0x17D7840
 #define TIMER3 0x17D7840
-#define RIT 0x17D7840
+#define RIT 0x2FAF080
 #endif
 
 #endif /* end __RIT_H */

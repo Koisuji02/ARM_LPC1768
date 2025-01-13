@@ -23,7 +23,17 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define N 100
 volatile unsigned char led_value;
+unsigned char vet[N];
+unsigned int index = 0;
+//int value_tmp = 0;
+//unsigned char val; // 8 bit da prendere da TC alla pressione di KEY1
+//unsigned int counter_tim0 = 0;
+
+//#define MAX_8BIT 0xFF
+//unsigned char var;
+//unsigned int totale = 0;
 
 #ifdef SIMULATOR
 extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emulator to find the symbol (can be placed also inside system_LPC17xx.h but since it is RO, it needs more work)
@@ -68,21 +78,30 @@ int main (void) {
   
 	//call_svc();														// per chiamata a SVC se richiesta
 	SystemInit();  												/* System Initialization 							*/
+	
   LED_init();                           /* LED Initialization                 */
+	//LED_Out(0);			// all'inizio tutti spenti
+	//LED_Out(0xFF); // inizializzo i led tutti accesi
+	
   BUTTON_init();												/* BUTTON Initialization              */
 	joystick_init();											/* Joystick Initialization            */
 	init_RIT(0x1312D0);									/* RIT Initialization 50 msec       	*/
 	//enable_RIT();													/* RIT enabled												*/
-	// il rit faccio enable nel int0 se serve
+	// il rit faccio enable nei pulsanti se serve, altrimenti direttamente nel main se serve
 	
 	// sintassi della init_timer:
 	// init_timer(#timer_da_attivare, prescaler [inutile], MR#, SRI = stop, reset, interrupt, count = T*25*10^6)
 	// SRI è stop (vedi dal grafico chi stoppa, qui nessuno), reset (chi ferma e fa ripartire l'onda, in questo caso MR1 a fine onda) e interrupt (chi chiama l'interrupt_handler, in questo caso sia MR0 e sia MR1, ma con gestioni diverse)
-	init_timer(0,0,0,1,0x1312D0);
-	init_timer(0,0,1,3,0x1312D0);
-	enable_timer(0);
 	
-	//LED_Out(0xFF); // inizializzo i led tutti accesi
+	init_timer(0,0,0,3,0x17D7840); // timer 0 controlla che pressione KEY2 < 1s
+	
+	init_timer(1,0,0,3,0x2625A0); // decimi di secondo = 0.1s
+	
+	init_timer(2,0,0,3,0x2FAF080); // 0.5Hz = 2s
+	
+	init_timer(3,0,0,3,0x23C3460); // 1.5s
+	
+	//enable_timer(1);
 	
 	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);						

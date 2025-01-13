@@ -8,6 +8,7 @@
 **--------------------------------------------------------------------------------------------------------
 *********************************************************************************************************/
 #include <stdint.h>
+#include "led/led.h"
 #ifndef __RIT_H
 #define __RIT_H
 
@@ -18,6 +19,21 @@ extern void disable_RIT( void );
 extern void reset_RIT( void );
 /* IRQ_RIT.c */
 extern void RIT_IRQHandler (void);
+
+#define N 100
+extern volatile unsigned char led_value;
+
+extern unsigned char vet[N];
+extern unsigned int index;
+
+//extern unsigned char val; // 8 bit da prendere da TC alla pressione di KEY1
+//extern unsigned int counter_tim0;
+//extern int value_tmp;
+//extern int disabilitoKey1;
+//#define MAX_8BIT 0xFF
+//extern unsigned char var;
+//extern unsigned int totale;
+//extern int disattivato;
 
 #endif /* end __RIT_H */
 /*****************************************************************************
