@@ -192,80 +192,75 @@ end_confronto					MOV r0, r7			; torno il totale
 									
 								; versione di bubble sort crescente su 32 BIT (se 8 bit, LDRB, STRB, ADD #1 etc...)
 								EXPORT sort_crescente
-			
-sort_crescente					PROC
-								PUSH {r4-r8, r10-r11, lr}  		; Salva i registri utilizzati
-								
-								; r0 = vet
-								; r1 = index
-								MOV r4, r0                  ; r4 = vet (32 bit, altrimenti vedi su)
-								MOV r5, r1                  ; r5 = index (# elementi)
 
-								CMP r5, #1                  ; se la lunghezza del vettore è 1 o meno, esci
-								BLE sort_crescente_exit
+sort_crescente    				PROC
+								PUSH {r4-r8, lr}          ; Salva i registri utilizzati e il link register
 
-sort_crescente_outer_loop		MOV r6, #0                  ; Flag per controllare se ci sono stati scambi
-								MOV r11, r5					; lunghezza ciclo interno
+								CMP r1, #1                ; Controlla se il numero di elementi è <= 1
+								BLE sort_crescente_exit   ; Se sì, esci
 
-sort_crescente_inner_loop		LDR r7, [r4]                ; r7 = vet[i]
-								ADD r10, r4, #4				; r10 = i+1
-								LDR r8, [r10]            	; r8 = vet[i+1]
+								MOV r5, r1                ; r5 = lunghezza array (numero di elementi)
 
-								CMP r7, r8                  ; Confronta i due elementi
-								BLE sort_crescente_skip_swap
+outer_loop_crescente			MOV r6, #0                ; Flag per scambi, inizialmente a 0
+								SUB r7, r5, #1            ; r7 = numero di confronti da fare nel ciclo interno (n-1)
+								MOV r4, r0                ; r4 punta all'inizio dell'array
 
-								; Scambia gli elementi
-								STR r8, [r4]
-								STR r7, [r10]
-								MOV r6, #1                  ; Imposta il flag se c'è stato uno scambio
+inner_loop_crescente			LDR r8, [r4]              ; r8 = elemento corrente vet[i]
+								LDR r9, [r4, #4]          ; r9 = elemento successivo vet[i+1]
 
-sort_crescente_skip_swap		ADD r4, r4, #4              ; i++
-								SUBS r11, r11, #1             ; Decrementa il contatore del ciclo interno
-								BGT sort_crescente_inner_loop	; se ho ancora elementi salta
+								CMP r8, r9                ; Confronta vet[i] con vet[i+1]
+								BLE no_swap_crescente               ; Se vet[i] <= vet[i+1], salta lo scambio
 
-								CMP r6, #1                  ; Controlla se ci sono stati scambi
-								BNE sort_crescente_outer_loop
+								; Scambia vet[i] e vet[i+1]
+								STR r9, [r4]              ; Scrivi vet[i+1] in vet[i]
+								STR r8, [r4, #4]          ; Scrivi vet[i] in vet[i+1]
+								MOV r6, #1                ; Imposta il flag per indicare uno scambio
 
-sort_crescente_exit				POP{r4-r8, r10-r11, pc}
+no_swap_crescente				ADD r4, r4, #4            ; Avanza all'elemento successivo
+								SUBS r7, r7, #1           ; Decrementa il contatore del ciclo interno
+								BGT inner_loop_crescente            ; Continua il ciclo interno se ci sono elementi da confrontare
+
+								CMP r6, #0                ; Controlla se ci sono stati scambi
+								BNE outer_loop_crescente            ; Se sì, ripeti il ciclo esterno
+
+sort_crescente_exit				POP {r4-r8, pc}           ; Ripristina i registri e ritorna
 								ENDP
+
 									
 								; versione di bubble sort decrescente su 32 BIT (se 8 bit, LDRB, STRB, ADD #1 etc...)
 								EXPORT sort_decrescente
-			
-sort_decrescente				PROC
-								PUSH {r4-r8, r10-r11, lr}  		; Salva i registri utilizzati
-								
-								; r0 = vet
-								; r1 = index
-								MOV r4, r0                  ; r4 = vet (32 bit, altrimenti vedi su)
-								MOV r5, r1                  ; r5 = index (# elementi)
 
-								CMP r5, #1                  ; se la lunghezza del vettore è 1 o meno, esci
-								BLE sort_decrescente_exit
+sort_decrescente  				PROC
+								PUSH {r4-r8, lr}          ; Salva i registri utilizzati e il link register
 
-sort_decrescente_outer_loop		MOV r6, #0                  ; Flag per controllare se ci sono stati scambi
-								MOV r11, r5					; lunghezza ciclo interno
+								CMP r1, #1                ; Controlla se il numero di elementi è <= 1
+								BLE sort_decrescente_exit ; Se sì, esci
 
-sort_decrescente_inner_loop		LDR r7, [r4]                ; r7 = vet[i]
-								ADD r10, r4, #4				; r10 = i+1
-								LDR r8, [r10]            	; r8 = vet[i+1]
+								MOV r5, r1                ; r5 = lunghezza array (numero di elementi)
 
-								CMP r7, r8                  ; Confronta i due elementi
-								BGE sort_decrescente_skip_swap
+outer_loop_decrescente			MOV r6, #0                ; Flag per scambi, inizialmente a 0
+								SUB r7, r5, #1            ; r7 = numero di confronti da fare nel ciclo interno (n-1)
+								MOV r4, r0                ; r4 punta all'inizio dell'array
 
-								; Scambia gli elementi
-								STR r8, [r4]
-								STR r7, [r10]
-								MOV r6, #1                  ; Imposta il flag se c'è stato uno scambio
+inner_loop_decrescente			LDR r8, [r4]              ; r8 = elemento corrente vet[i]
+								LDR r9, [r4, #4]          ; r9 = elemento successivo vet[i+1]
 
-sort_decrescente_skip_swap		ADD r4, r4, #4              ; i++
-								SUBS r11, r11, #1             ; Decrementa il contatore del ciclo interno
-								BGT sort_decrescente_inner_loop	; se ho ancora elementi salta
+								CMP r8, r9                ; Confronta vet[i] con vet[i+1]
+								BGE no_swap_decrescente               ; Se vet[i] >= vet[i+1], salta lo scambio
 
-								CMP r6, #1                  ; Controlla se ci sono stati scambi
-								BNE sort_decrescente_outer_loop
+								; Scambia vet[i] e vet[i+1]
+								STR r9, [r4]              ; Scrivi vet[i+1] in vet[i]
+								STR r8, [r4, #4]          ; Scrivi vet[i] in vet[i+1]
+								MOV r6, #1                ; Imposta il flag per indicare uno scambio
 
-sort_decrescente_exit			POP{r4-r8, r10-r11, pc}
+no_swap_decrescente				ADD r4, r4, #4            ; Avanza all'elemento successivo
+								SUBS r7, r7, #1           ; Decrementa il contatore del ciclo interno
+								BGT inner_loop_decrescente            ; Continua il ciclo interno se ci sono elementi da confrontare
+
+								CMP r6, #0                ; Controlla se ci sono stati scambi
+								BNE outer_loop_decrescente            ; Se sì, ripeti il ciclo esterno
+
+sort_decrescente_exit			POP {r4-r8, pc}           ; Ripristina i registri e ritorna
 								ENDP
-								
+		
 								END

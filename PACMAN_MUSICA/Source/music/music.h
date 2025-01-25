@@ -6,7 +6,13 @@
 
 #define TIMERSCALER 1						// Timer scaler for frequency adjustments
 
-#define SECOND 0x17D7840 * TIMERSCALER  // Constant representing one second
+#ifdef SIMULATOR
+#define VEL 0x67C28*5 // 17ms = 0x67C28			// 20ms = 0x7A120
+#else
+#define VEL 0x2FAF080
+#endif
+
+#define SECOND VEL * TIMERSCALER  // Constant representing one second
 
 // Define boolean type and values
 typedef char BOOL;
@@ -19,12 +25,12 @@ typedef char BOOL;
     // In simulation mode, these values are adjusted to produce a "familiar" sound 
     // for the human ear when played through the buzzer. This ensures the sound 
     // resembles what it would sound like on the real hardware.
-    #define SPEEDUP        1.4f    // Increase the speed to adjust timing for simulation
-    #define AMPLIFIER      10      // Amplify the sound for better simulation
+    #define SPEEDUP        1.4f   // Increase the speed to adjust timing for simulation
+    #define AMPLIFIER      5      // Amplify the sound for better simulation
 #else
     // Default values for real hardware playback
-    #define SPEEDUP        1.4f    // Normal speed
-    #define AMPLIFIER      10       // No amplification
+    #define SPEEDUP        1.0f    // Normal speed
+    #define AMPLIFIER      1       // No amplification
 #endif
 	
 // Macro to calculate the frequency of a note /* k=1/f'*f/n  k=f/(f'*n) k=25MHz/(f'*45) */

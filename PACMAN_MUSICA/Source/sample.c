@@ -32,6 +32,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "music/music.h"
+#include "adc/adc.h"
 
 
 
@@ -608,11 +609,11 @@ void muoviChaseMode(){ // singolo movimento in chase mode (uguale a frightened m
 }
 
 #ifdef SIMULATOR
-#define TIMER0 0xC8
-#define TIMER1 0x1E848 	// 10ms/2 -> 5ms = 125000 = 0x1E848
-#define TIMER2 0x3D090 	// 10ms
-#define TIMER3 0x3D090	// 10 ms (scalata da 20 perchè troppo lenta)
-#define RIT 0x67C28 // 17ms = 0x67C28			// 20ms = 0x7A120
+#define TIMER0 0xC8*5
+#define TIMER1 0x1E848*5 	// 10ms/2 -> 5ms = 125000 = 0x1E848
+#define TIMER2 0x3D090*5 	// 10ms
+#define TIMER3 0x3D090*5	// 10 ms (scalata da 20 perchè troppo lenta)
+#define RIT 0x67C28*5 // 17ms = 0x67C28			// 20ms = 0x7A120
 #else
 #define TIMER0 0x17D7840
 #define TIMER1 0x17D7840
@@ -685,7 +686,8 @@ NOTE melody[MELODY_SIZE] =
 
 int main(void){
 	
-  SystemInit();  												/* System Initialization (i.e., PLL)  */
+  int k;
+	SystemInit();  												/* System Initialization (i.e., PLL)  */
   LCD_Initialization();
 	inizializzaSchermo();
 	inizializzaPillars();
@@ -702,7 +704,7 @@ int main(void){
 	//init_timer(0, 0, 0, 3, TIMER0); // 1 ms = 61A8 -> 1s = 17D7840
 	//enable_timer(0);
 	
-	// timer per conteggio time rimasto (1s)
+	// timer per conteggio time rimasto (1s) + fantasma
 	init_timer(1, 0, 0, 3, TIMER1); // 20ms = 7A120 -> 1s = 17D7840
 	
 	// timer per generazione pillars casuali
@@ -717,8 +719,41 @@ int main(void){
 	init_RIT(RIT); // 50ms = 1312D0 -> 1s = 17D7840
 	//enable_RIT(); // enable_RIT lo metto in IRQ_button
 	
+	ADC_init();
+	
 	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
-	LPC_SC->PCON &= ~(0x2);						
+	LPC_SC->PCON &= ~(0x2);	
+	
+	LPC_PINCON->PINSEL1 |= (1<<21);
+	LPC_PINCON->PINSEL1 &= ~(1<<20);
+	LPC_GPIO0->FIODIR |= (1<<26);
+	
+	CAN_setup(1);                    // Setup CAN controller 1
+	CAN_setup(2);                    // Setup CAN controller 2
+
+	CAN_start(1);                    // Start CAN controller 1
+	CAN_start(2);                    // Start CAN controller 2
+
+	CAN_waitReady(1);                // Wait until CAN controller 1 is ready
+	CAN_waitReady(2);                // Wait until CAN controller 2 is ready
+
+	NVIC_EnableIRQ(CAN_IRQn);        // Enable CAN interrupt
+
+	CAN_TxMsg.id = 33;               // Set the ID for the CAN message
+	CAN_TxMsg.len = 4;               // Set the data length for the CAN message
+
+	while (1) {
+			// Update the CAN_TxMsg with the current score, lives, and time remaining
+			CAN_TxMsg.data[0] = time_elapsed;  // 8 bits for time remaining
+			CAN_TxMsg.data[1] = life; // 8 bits for lives remaining
+			CAN_TxMsg.data[2] = (score >> 8);    // Upper 8 bits of the score
+			CAN_TxMsg.data[3] = (score & 0xFF);  // Lower 8 bits of the score
+
+			CAN_wrMsg(1, &CAN_TxMsg);    // Write the CAN message to CAN1
+
+			// Simulate a delay or game loop update
+			for (k = 0; k < 1000000; k++);
+	}			
 	
   while (1)	
 		

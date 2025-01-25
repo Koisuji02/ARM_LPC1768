@@ -20,10 +20,9 @@ extern void reset_RIT( void );
 /* IRQ_RIT.c */
 extern void RIT_IRQHandler (void);
 
-#define N 100
+#define N 5
 extern volatile unsigned char led_value;
-
-extern unsigned char vet[N];
+extern unsigned int vet[N];
 extern unsigned int index;
 
 //extern unsigned char val; // 8 bit da prendere da TC alla pressione di KEY1

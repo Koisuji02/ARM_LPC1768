@@ -20,8 +20,8 @@ void playNote(NOTE* note)
         // Abilita il timer per far partire il suono
         enable_timer(0);
     }
-		//reset_timer(2);
-		init_timer(2, 0, 1, 7, 0x3D090);
+		reset_timer(2);
+		init_timer(2, 0, 1, 7, note->duration); // da mettere note_-> duration
 		enable_timer(2);
 }
 

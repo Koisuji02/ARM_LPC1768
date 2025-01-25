@@ -23,9 +23,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define N 100
+#define N 5
 volatile unsigned char led_value;
-unsigned char vet[N];
+unsigned int vet[N];
 unsigned int index = 0;
 //int value_tmp = 0;
 //unsigned char val; // 8 bit da prendere da TC alla pressione di KEY1
@@ -74,6 +74,35 @@ float	compute_pigreco(int raggio){
 	return pigreco;
 } */
 
+/*void bubbleSortAscending(unsigned char arr[], int n) {
+    int i, j;  // Definizione di 'i' e 'j' fuori dai cicli for
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void bubbleSortDescending(unsigned char arr[], int n) {
+    int i, j;  // Definizione di 'i' e 'j' fuori dai cicli for
+    for (i = 0; i < n - 1; i++) {
+        for (j = 0; j < n - i - 1; j++) {
+            if (arr[j] < arr[j + 1]) {
+                int temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+     }
+   }
+}*/
+
+void sort_crescente(unsigned int* vet, unsigned int index);
+void sort_decrescente(unsigned int* vet, unsigned int index);
+
 int main (void) {
   
 	//call_svc();														// per chiamata a SVC se richiesta
@@ -100,6 +129,10 @@ int main (void) {
 	init_timer(2,0,0,3,0x2FAF080); // 0.5Hz = 2s
 	
 	init_timer(3,0,0,3,0x23C3460); // 1.5s
+	
+	//sort_crescente(vet, N);
+	
+	//sort_decrescente(vet, N);
 	
 	//enable_timer(1);
 	

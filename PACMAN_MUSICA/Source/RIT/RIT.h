@@ -8,6 +8,7 @@
 **--------------------------------------------------------------------------------------------------------
 *********************************************************************************************************/
 #include <stdint.h>
+#include "CAN/CAN.h"
 #ifndef __RIT_H
 #define __RIT_H
 #define N 22
@@ -54,13 +55,14 @@ extern int inizializzato;
 extern int callerGameOver;
 extern void stopMusic();
 extern void startMusic();
+extern volatile int time_elapsed;
 
 #ifdef SIMULATOR
-#define TIMER0 0xC8
-#define TIMER1 0x1E848 	// 10ms/2 -> 5ms = 125000 = 0x1E848
-#define TIMER2 0x3D090 	// 10ms
-#define TIMER3 0x3D090	// 10 ms (scalata da 20 perchè troppo lenta)
-#define RIT 0x67C28 // 17ms = 0x67C28			// 20ms = 0x7A120
+#define TIMER0 0xC8*5
+#define TIMER1 0x1E848*5 	// 10ms/2 -> 5ms = 125000 = 0x1E848
+#define TIMER2 0x3D090*5 	// 10ms
+#define TIMER3 0x3D090*5	// 10 ms (scalata da 20 perchè troppo lenta)
+#define RIT 0x67C28*5 // 17ms = 0x67C28			// 20ms = 0x7A120
 #else
 #define TIMER0 0x17D7840
 #define TIMER1 0x17D7840
