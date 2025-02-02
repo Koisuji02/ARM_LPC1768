@@ -142,9 +142,9 @@ end_sort						MOV r0, r1                      ; r0 = metto val e torno
 								POP {r4-r8, r10-r11, pc}         ; Ritorna dai salvataggi dei registri
 								ENDP
 
-								EXPORT svuotaVet
+								EXPORT svuotaVet8
 			
-svuotaVet						PROC
+svuotaVet8						PROC
 								PUSH {r4-r8, r10-r11, lr}  		; Salva i registri utilizzati
 				
 								; r0 = vet
@@ -152,14 +152,34 @@ svuotaVet						PROC
 								MOV r4, r0	; r4 = vet
 								MOV r5, #0	; r5 = i
 								MOV r6, #0	; r6 = 0 = valore azzerante
-loop_svuota						CMP r5, r1
-								BGE	end_svuota
+loop_svuota8					CMP r5, r1
+								BGE	end_svuota8
 								STRB r6, [r4]
 								ADD r4, r4, #1		; vet[i]++
 								ADD r5, r5, #1		; i++ (per confronto)
-								B loop_svuota
+								B loop_svuota8
 				
-end_svuota						POP{r4-r8, r10-r11, pc}
+end_svuota8						POP{r4-r8, r10-r11, pc}
+								ENDP
+								
+								EXPORT svuotaVet32
+			
+svuotaVet32						PROC
+								PUSH {r4-r8, r10-r11, lr}  		; Salva i registri utilizzati
+				
+								; r0 = vet
+								; r1 = index
+								MOV r4, r0	; r4 = vet
+								MOV r5, #0	; r5 = i
+								MOV r6, #0	; r6 = 0 = valore azzerante
+loop_svuota32					CMP r5, r1
+								BGE	end_svuota32
+								STR r6, [r4]
+								ADD r4, r4, #4		; vet[i]++
+								ADD r5, r5, #1		; i++ (per confronto)
+								B loop_svuota32
+				
+end_svuota32					POP{r4-r8, r10-r11, pc}
 								ENDP
 
 								EXPORT totale_pressioni_con_filtro

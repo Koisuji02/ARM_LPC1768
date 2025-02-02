@@ -27,13 +27,10 @@
 volatile unsigned char led_value;
 unsigned char vet[N] = {35, 20, 80, 46};
 unsigned int index = 0;
-char time = 0;
 unsigned char vet2[N];
+unsigned char var = 0;
 char res[N];
-unsigned int index2 = 0;
-unsigned char media = 0;
-unsigned int indexRes = 0;
-
+unsigned char result = 0;
 //int value_tmp = 0;
 //unsigned char val; // 8 bit da prendere da TC alla pressione di KEY1
 //unsigned int counter_tim0 = 0;
@@ -81,7 +78,7 @@ float	compute_pigreco(int raggio){
 	return pigreco;
 } */
 
-void bubbleSortAscending(int arr[], int n) {
+/*void bubbleSortAscending(unsigned char arr[], int n) {
     int i, j;  // Definizione di 'i' e 'j' fuori dai cicli for
     for (i = 0; i < n - 1; i++) {
         for (j = 0; j < n - i - 1; j++) {
@@ -94,7 +91,7 @@ void bubbleSortAscending(int arr[], int n) {
     }
 }
 
-void bubbleSortDescending(int arr[], int n) {
+void bubbleSortDescending(unsigned char arr[], int n) {
     int i, j;  // Definizione di 'i' e 'j' fuori dai cicli for
     for (i = 0; i < n - 1; i++) {
         for (j = 0; j < n - i - 1; j++) {
@@ -105,7 +102,10 @@ void bubbleSortDescending(int arr[], int n) {
             }
      }
    }
-}
+}*/
+
+void sort_crescente(unsigned int* vet, unsigned int index);
+void sort_decrescente(unsigned int* vet, unsigned int index);
 
 int main (void) {
   
@@ -126,15 +126,20 @@ int main (void) {
 	// init_timer(#timer_da_attivare, prescaler [inutile], MR#, SRI = stop, reset, interrupt, count = T*25*10^6)
 	// SRI è stop (vedi dal grafico chi stoppa, qui nessuno), reset (chi ferma e fa ripartire l'onda, in questo caso MR1 a fine onda) e interrupt (chi chiama l'interrupt_handler, in questo caso sia MR0 e sia MR1, ma con gestioni diverse)
 	
-	init_timer(0,0,0,3,0x2625A0); // 0.1s (decimi di secondo)
+	init_timer(0,0,0,3,0x2625A0); // 0.1s
 	
-	init_timer(1,0,0,3,0x2625A0); // 0.1s -> x5
+	init_timer(1,0,0,3,0x2625A0/2); // 0.05s -> periodo di 0.1s
 	
-	init_timer(2,0,0,3,0x5F5E10); // 0.25s -> x4
+	init_timer(2,0,0,3,0x2625A0*1.25); // 0.125s -> periodo di 0.25s
 	
 	//init_timer(3,0,0,3,0x23C3460); // 1.5s
 	
+	//sort_crescente(vet, N);
+	
+	//sort_decrescente(vet, N);
+	
 	//enable_timer(1);
+	svuotaVet8(vet2, N); // per sicurezza
 	
 	LPC_SC->PCON |= 0x1;									/* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);						

@@ -25,7 +25,8 @@
 //unsigned char get_and_sort(unsigned char* vet, unsigned char val, int index);
 //int disabilitoKey1 = 0;
 
-//void svuotaVet(unsigned char* vet, unsigned int index);
+void svuotaVet8(unsigned char* vet, unsigned int index);
+void svuotaVet32(unsigned int* vet, unsigned int index);
 //unsigned int totale_pressioni_con_filtro(unsigned char VETT[], unsigned int  numero_misure, unsigned char MAX, unsigned char MIN);
 
 int disattivato =  0;
@@ -161,26 +162,26 @@ void RIT_IRQHandler(void) {
 				// AZIONE DOWN
 		}
 
-		switch (position) {
-				case 1:
-						// UP
-						break;
+//		switch (position) {
+//				case 1:
+//						// UP
+//						break;
 
-				case 2:
-						// RIGHT
-						break;
+//				case 2:
+//						// RIGHT
+//						break;
 
-				case 3:
-						// LEFT
-						break;
+//				case 3:
+//						// LEFT
+//						break;
 
-				case 4:
-						// DOWN
-						break;
+//				case 4:
+//						// DOWN
+//						break;
 
-				default:
-						break;
-		}
+//				default:
+//						break;
+//		}
 
 	LPC_RIT->RICTRL |= 0x1; // Clear interrupt flag (lo tolgo se devo fare più di 1 mossa con 1 singolo input del RIT [es pacman che va avanti per la sua strada dopo che imposto position])
 	return;

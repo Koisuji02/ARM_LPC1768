@@ -25,12 +25,12 @@
 //unsigned char get_and_sort(unsigned char* vet, unsigned char val, int index);
 //int disabilitoKey1 = 0;
 
-void svuotaVet(unsigned char* vet, unsigned int index);
-void svuotaVetS(char* vet, unsigned int index);
-//unsigned int totale_pressioni_con_filtro(unsigned char VETT[], unsigned int  numero_misure, unsigned char MAX, unsigned char MIN);
-
+void svuotaVet8(unsigned char* vet, unsigned int index);
+void svuotaVet8S(char* vet, unsigned int index);
+void svuotaVet32(unsigned int* vet, unsigned int index);
 unsigned char analisi_accuratezza(unsigned char VETT[], unsigned char VETT2[], const unsigned int num, char RES[]);
 
+//unsigned int totale_pressioni_con_filtro(unsigned char VETT[], unsigned int  numero_misure, unsigned char MAX, unsigned char MIN);
 
 int disattivato =  0;
 
@@ -94,10 +94,10 @@ void RIT_IRQHandler(void) {
 							enable_timer(1);*/
 							
 							// AZIONE KEY1
-							time = 0;
+							var = 0;
+							enable_timer(0);
 							LED_Out(vet[index]);
-							index++;
-							enable_timer(0); // conto la pressione
+							
 							
 							break;
 						default:
@@ -111,21 +111,18 @@ void RIT_IRQHandler(void) {
 					reset_RIT();
 					
 					// AZIONE DA FARE AL RILASCIO DI KEY1
-					LED_Out(0); //spengo
-					disable_timer(0);
+					disable_timer(0); // stoppo
 					reset_timer(0);
-					vet2[index2] = time;
-					index2++;
-					if(index2 == N){ // satura
-						media = analisi_accuratezza(vet, vet2, N, res);
-						disattivato = 1; // blocco acquisizione nuovi valori
-						if(res[indexRes] > media){
-							// timer1
-							//reset_timer(1);
+					LED_Out(0);
+					vet2[index] = var;
+					index++;
+					if(index == N){ // vet pieno
+						result = analisi_accuratezza(vet, vet2, N, res);
+						index = 0; // per res
+						disattivato = 1;
+						if(res[index] > result){
 							enable_timer(1);
 						} else{
-							// timer2
-							//reset_timer(2);
 							enable_timer(2);
 						}
 					}
@@ -187,26 +184,26 @@ void RIT_IRQHandler(void) {
 				// AZIONE DOWN
 		}
 
-		switch (position) {
-				case 1:
-						// UP
-						break;
+//		switch (position) {
+//				case 1:
+//						// UP
+//						break;
 
-				case 2:
-						// RIGHT
-						break;
+//				case 2:
+//						// RIGHT
+//						break;
 
-				case 3:
-						// LEFT
-						break;
+//				case 3:
+//						// LEFT
+//						break;
 
-				case 4:
-						// DOWN
-						break;
+//				case 4:
+//						// DOWN
+//						break;
 
-				default:
-						break;
-		}
+//				default:
+//						break;
+//		}
 
 	LPC_RIT->RICTRL |= 0x1; // Clear interrupt flag (lo tolgo se devo fare più di 1 mossa con 1 singolo input del RIT [es pacman che va avanti per la sua strada dopo che imposto position])
 	return;

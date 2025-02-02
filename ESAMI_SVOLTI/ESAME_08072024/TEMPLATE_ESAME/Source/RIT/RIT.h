@@ -22,16 +22,16 @@ extern void RIT_IRQHandler (void);
 
 #define N 4
 extern volatile unsigned char led_value;
-
 extern unsigned char vet[N];
 extern unsigned int index;
-extern char time;
+extern void svuotaVet8(unsigned char* vet, unsigned int index);
+extern void svuotaVet32(unsigned int* vet, unsigned int index);
+void svuotaVet8S(char* vet, unsigned int index);
+extern unsigned char result;
 extern unsigned char vet2[N];
-extern unsigned int index2;
-extern unsigned char analisi_accuratezza(unsigned char VETT[], unsigned char VETT2[], const unsigned int num, char RES[]);
 extern char res[N];
-extern unsigned char media;
-extern unsigned int indexRes;
+extern unsigned char var;
+extern unsigned char analisi_accuratezza(unsigned char VETT[], unsigned char VETT2[], const unsigned int num, char RES[]);
 
 //extern unsigned char val; // 8 bit da prendere da TC alla pressione di KEY1
 //extern unsigned int counter_tim0;
@@ -41,8 +41,7 @@ extern unsigned int indexRes;
 //extern unsigned char var;
 //extern unsigned int totale;
 extern int disattivato;
-extern void svuotaVet(unsigned char* vet, unsigned int index);
-extern void svuotaVetS(char* vet, unsigned int index);
+
 #endif /* end __RIT_H */
 /*****************************************************************************
 **                            End Of File

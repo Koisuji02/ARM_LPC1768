@@ -28,8 +28,8 @@ void TIMER0_IRQHandler (void)
 {
 	if(LPC_TIM0->IR & 1) // MR0
 	{ 
-		// your code+
-		time++;
+		// your code
+		var++;
 		LPC_TIM0->IR = 1;			//clear interrupt flag
 	}
 	else if(LPC_TIM0->IR & 2){ // MR1
@@ -57,43 +57,36 @@ void TIMER0_IRQHandler (void)
 **
 ******************************************************************************/
 
+int counter1 = 0;
+int counter2 = 0;
 
 void TIMER1_IRQHandler (void)
 {
 	if(LPC_TIM1->IR & 1) // MR0
 	{ 
 		// your code
-		static int counter = 0;
-		if(counter == 5){// fine timer
-			disable_timer(1);
-			reset_timer(1);
-			indexRes++;
-			if(indexRes == N){// fine vettore
-				svuotaVet(vet2, N);
-				svuotaVetS(res, N);
-				index2 = 0;
-				indexRes = 0;
+		if(counter1 == 10){
+			index++;
+			counter1 = 0;
+			if(index < N){
+				if(res[index] > result){
+					enable_timer(1);
+				} else{
+					enable_timer(2);
+					disable_timer(1);
+					reset_timer(1);
+				}
+			} else{
+				svuotaVet8(vet2, N);
+				svuotaVet8S(res, N);
 				index = 0;
 				disattivato = 0;
-				disable_timer(2);
-				reset_timer(2);
 			}
-			if(res[indexRes] > media){
-				// timer1
-				//reset_timer(1);
-				enable_timer(1);
-			} else{
-				// timer2
-				//reset_timer(2);
-				enable_timer(2);
-			}
+		} else{
+			if((counter1 % 2) == 0) LED_Out(res[index]);
+			else LED_Out(0);
+			counter1++;
 		}
-		if((counter % 2) == 0){
-				LED_Out(res[indexRes]);
-			} else{
-				LED_Out(0);
-			}
-		counter++;
 		LPC_TIM1->IR = 1;			//clear interrupt flag
 	}
 
@@ -116,38 +109,28 @@ void TIMER2_IRQHandler (void)
 	if(LPC_TIM2->IR & 1) // MR0 -> lavoro con MR0 per il debounce
 	{
 		// your code
-		static int counter = 0;
-		if(counter == 4){// fine timer
-			disable_timer(2);
-			reset_timer(2);
-			indexRes++;
-			if(indexRes == N){// fine vettore
-				svuotaVet(vet2, N);
-				svuotaVetS(res, N);
-				index2 = 0;
-				indexRes = 0;
+		if(counter2 == 8){
+			index++;
+			counter2 = 0;
+			if(index < N){
+				if(res[index] > result){
+					enable_timer(1);
+					disable_timer(2);
+					reset_timer(2);
+				} else{
+					enable_timer(2);
+				}
+			} else{
+				svuotaVet8(vet2, N);
+				svuotaVet8S(res, N);
 				index = 0;
 				disattivato = 0;
-				disable_timer(1);
-				reset_timer(1);
 			}
-			if(res[indexRes] > media){
-				// timer1
-				//reset_timer(1);
-				enable_timer(1);
-				//disable_timer(2);
-			} else{
-				// timer2
-				//reset_timer(2);
-				enable_timer(2);
-			}
-		}
-		if((counter % 2) == 0){
-			LED_Out(res[indexRes]);
 		} else{
-			LED_Out(0);
+			if((counter2 % 2) == 0) LED_Out(res[index]);
+			else LED_Out(0);
+			counter2++;
 		}
-		counter++;
 		LPC_TIM2->IR = 1;			//clear interrupt flag
 	}
 	

@@ -23,10 +23,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define N 5
+#define N 10
 volatile unsigned char led_value;
 unsigned int vet[N];
 unsigned int index = 0;
+unsigned int result = 0;
 //int value_tmp = 0;
 //unsigned char val; // 8 bit da prendere da TC alla pressione di KEY1
 //unsigned int counter_tim0 = 0;
